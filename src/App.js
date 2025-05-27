@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import './App.css';  // Import component styles
+import './App.css';
+
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
 
 export default function PremiumURLShortener() {
   const [longUrl, setLongUrl] = useState('');
@@ -16,7 +19,7 @@ export default function PremiumURLShortener() {
     }
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:5000/api/shorten', {
+      const response = await fetch(`${BACKEND_URL}/api/shorten`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ long_url: longUrl }),
@@ -42,19 +45,20 @@ export default function PremiumURLShortener() {
         placeholder="Enter your long URL here"
         value={longUrl}
         onChange={(e) => setLongUrl(e.target.value)}
-  onKeyDown={(e) => {
-    if (e.key === 'Enter') {
-      shortenUrl();  // call your function to shorten URL on Enter key press
-    }
-  }}
-  spellCheck="false"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') shortenUrl();
+        }}
+        spellCheck="false"
       />
       <button onClick={shortenUrl} disabled={loading}>
         {loading ? 'Shortening...' : 'Shorten URL'}
       </button>
       {shortUrl && (
         <div className="result">
-          Short URL: <a href={shortUrl} target="_blank" rel="noopener noreferrer">{shortUrl}</a>
+          Short URL:{' '}
+          <a href={shortUrl} target="_blank" rel="noopener noreferrer">
+            {shortUrl}
+          </a>
         </div>
       )}
       {error && <div className="error">{error}</div>}
